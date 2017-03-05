@@ -9,7 +9,7 @@ static void log_doit(int, int, int, const char *fmt, va_list ap);
 *	Caller must define and set this: nonzero if
 *	interactive, zero if daemonize
 */
-extern int log_to_stderr;
+extern int log_to_stderr; /*????  maybe in logsys can be show*/
 
 /*
 *	Initilize syslog(), if running as daemon
@@ -61,7 +61,7 @@ void log_msg(const char *fmt, ...) {
 *	Fatal error unrelated to a system call.
 * Print a message and terminate.
 */
-void log_quit(const char *, ...) {
+void log_quit(const char *fmt, ...) {
   va_list ap;
 
   va_start(ap, fmt);

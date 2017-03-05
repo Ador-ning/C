@@ -1,0 +1,45 @@
+#
+文件和目录
+	结构体stat属性
+1) 函数
+stat - 返回与改文件有关的信息结构
+fstat - 获得fd相关文件的有关信息
+lstat - 符号链接文件相关信息
+fstatat - 相对路径打开文件的相关信息
+2) 文件类型
+	普通文件
+	目录文件
+	块设备文件 - 提供带缓冲访问， 固定长度操作
+	字符设备文件 - 提供不带缓冲访问， 不固定长度操作
+	FIFO - 用于进程间通信，命名管道
+	套接字 - 网络通信文件
+	符号链接
+3) 用户ID 组ID
+	实际用户／组ID -- 超级用户进程可以改变
+	有效用户／组ID -- 及附属组ID决定文件的访问权限
+	保存的设置用户ID／组ID -- 在执行一个程序时包含有效用户／组ID的副本
+
+文件访问权限
+4) 函数
+access faccessat -- 按实际用户／组ID进行访问权限测试
+
+umask -- 为进程设置文件模式 创建屏蔽字，并返回之前的值
+5) 更改文件权限
+chmod -- 绝对路径字符串操作
+fchmod -- fd文件描述符操作
+fchmodat -- 相对路径字符串操作
+6) 粘着位-早期 保存正文位
+	如果一个可执行程序文件标记此标志，在程序第一次执行终止后，程序正文部分的一个副本被保存在交换分区，使得下次执行该程序能较快的将其装入内存中
+7) 更改文件的用户／组ID
+chown	fchown	fchownat	lchown
+	文件长度 -- 仅对普通文件 目录文件和符号链接有意义
+	文件空洞 -- 由所设置的偏移量超过文件的尾端，并写入数据后造成的
+8) 函数
+turncate fturncate -- 文件截断
+link linkat ulink ulinkat remove -- 任何文件可以有多个目录指向其i结点
+symlink	symlinkat
+rename renameat -- 文件重命名
+futimens futimensat utimes -- 文件时间
+mkdir mkdirat rmdir	-- 目录
+chdir fchdir getcwd
+特殊设备

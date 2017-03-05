@@ -1,0 +1,44 @@
+#标准IO库
+####细节： 缓冲区分配	以优化的块长度执行IO等
+
+#1 流与FILE对象
+##标准IO库操作围绕流进行。流定向决定了所读写的字符是单字节还是多字节。 若在未定向的流上使用一个多字节IO函数，将其设定未多字节定向。
+fwide -- 设置流的定向；	freopen -- 清楚流定向
+
+#2 缓冲
+##全缓冲 -- 在填满标准IO缓冲区后才进行实际操作  _IOFBF
+####fflush函数
+##行缓冲 -- 当在输入和输出遇到换行符时，才进行IO缓冲 _IOLBF
+
+##不带缓冲 -- stderr 不带缓冲				      _IONBF
+
+#3 打开流
+fopen	freopen - 清除	fdopen - 使用现有的fd
+fcolse - 关闭之前冲洗缓冲区中的数据，释放缓冲区
+
+#4 读写流
+####输入函数 -- getc() fget() getchar()		ferror() feof()
+####输出函数 -- putc() fputc() putchar()
+####行IO	-	fgets()	gets()	fputs() puts()
+##exit() 函数  -- 将会冲洗任何未写数据，然后关闭所有打开的流
+
+#5 二进制IO
+fread	fwrite
+
+#6 定位流
+fseek() rewind() -- 设置到文件起始位置
+ftell() SEEK_SET - 起始位置 SEEK_CUR - 当前位置 SEEK_END - 结束位置
+ftello()	fseeko()
+fgetpos() fsetpos()
+流 FILE *fp
+
+#7 格式化IO
+printf()-标准输出 fprintf()-流 dprintf()-文件 snprintf()、sprintf()-控制格式
+scanf() fscanf() sscanf()
+
+#8 临时文件
+tmpnam() tpmfile()
+mkdtemp() mkstemp() -- Single UNIX
+
+#9 内存流
+fmemopen()

@@ -1,0 +1,26 @@
+# Uint6 -- system data files and infos
+Include : system config function; time function; date function
+
+#1 口令文件  <pwd.h>定义结构体 passwd
+getpwuid()	getpwnam() -- 获取passwd结构体
+口令文件查看 -- getpwent()-打开文件 setpwent() endpwent()-关闭文件
+
+#2 阴影口令 <shadow.h>  结构体spwd
+getspnam()	getspent()	setspent() endspent()
+ent -- entity
+
+#3 组文件 <grp.h>定义结构体group
+getgrgid()	getgrnam() getgrent() setgrent() endgrent()
+
+#4 附属组ID <unistd.h>文件
+
+#5 其他数据文件
+／etc/services -- 记录网络服务器所提供的服务数据
+/etc/protocols -- 记录协议信息的数据文件
+/etc/networks -- 记录网路数据文件
+
+#6 系统标识  <sys/utsname.h>定义结构体utsname
+uname() gethostname()
+Shell Command -- uname
+
+#7 时间和日期例程	<time.h>定义结构体time_t  <sys/time.h>定义结构体clockid_t
