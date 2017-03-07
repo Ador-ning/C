@@ -1,4 +1,4 @@
-#include "../include/apue.h"
+#include "../lib/apue.h"
 #include <setjmp.h>
 
 /*#######################################*/

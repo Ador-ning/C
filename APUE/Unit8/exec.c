@@ -1,7 +1,7 @@
-· #include "../include/apue.h"
+#include "../lib/apue.h"
 #include <sys/wait.h>
 
-    char *env_init[] = {"USER=unknown", "PATH=/tmp", NULL};
+char *env_init[] = {"USER=unknown", "PATH=/tmp", NULL};
 
 int main(int argc, char const *argv[]) {
 

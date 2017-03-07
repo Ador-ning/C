@@ -1,4 +1,4 @@
-#include "../include/apue.h"
+#include "../lib/apue.h"
 #include <pwd.h> /* contains the structure of passwd */
 #include <stddef.h>
 #include <string.h>
