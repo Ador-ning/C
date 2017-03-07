@@ -53,14 +53,15 @@ typedef void Sigfunc(int); /* for signal handlers */
 /*
  * Prototypes for our own functions.
  */
+/* done */
 char *path_alloc(size_t *); /* {Prog pathalloc} 2.16*/
 long open_max(void);        /* {Prog openmax} 2.17*/
 
 int set_cloexec(int); /* {Prog setfd} 13.9*/
+
+/* done */
 void clr_fl(int, int);
 void set_fl(int, int); /* {Prog setfl} 3.12*/
-
-void pr_exit(int); /* {Prog prexit} 8.5*/
 
 void pr_mask(const char *);           /* {Prog prmask} 10.14*/
 Sigfunc *signal_intr(int, Sigfunc *); /* {Prog signal_intr_function}  10.19*/
@@ -120,6 +121,7 @@ pid_t lock_test(int, int, off_t, int, off_t); /* {Prog locktest} */
 /*
 *	Error Processing to Realize for procession
 */
+/* done */
 void err_msg(const char *, ...); /* {App misc_source} */
 void err_dump(const char *, ...) __attribute__((noreturn));
 void err_quit(const char *, ...) __attribute__((noreturn));
@@ -130,6 +132,7 @@ void err_sys(const char *, ...) __attribute__((noreturn));
 /*
 *	Error Processing to Realize for daemon procession
 */
+/* done */
 void log_msg(const char *, ...); /* {App misc_source} Part 13*/
 void log_open(const char *, int, int);
 void log_quit(const char *, ...) __attribute__((noreturn));
@@ -137,121 +140,18 @@ void log_ret(const char *, ...);
 void log_sys(const char *, ...) __attribute__((noreturn));
 void log_exit(int, const char *, ...) __attribute__((noreturn));
 
+/* done */
 void TELL_WAIT(
     void); /* parent/child from {Sec race_conditions} In Section 8.9*/
 void TELL_PARENT(pid_t);
 void TELL_CHILD(pid_t);
 void WAIT_PARENT(void);
 void WAIT_CHILD(void);
-#endif /* _APUE_H */
+void pr_exit(int); /* {Prog prexit} 8.5*/
 
-/*###################################*/
-/*Local Functions*/
-static void err_doit(int errflag, int error, const char *fmt, va_list ap) {
-  char buf[MAXLINE];
-
-  vsnprintf(buf, MAXLINE, fmt, ap); // in file <stdio.h>
-
-  if (errflag)
-    snprintf(buf + strlen(buf), MAXLINE - strlen(buf) - 1, ":%s",
-             strerror(error));
-  strcat(buf, "\n");
-  fflush(stdout);
-  fputs(buf, stderr);
-  fflush(NULL);
-}
-/*###################################*/
-
-/*###################################*/
-/* Processing Errors functions */
-// Nonfatal error related to a system call. print a message and return.
-void err_ret(const char *fmt, ...) {
-  va_list ap; // Define in file <stdarg.h>
-
-  va_start(ap, fmt);
-  err_doit(1, errno, fmt, ap);
-  va_end(ap);
-}
-
-// Fatal error related to a system call. Print a message and terminate.
-void err_sys(const char *fmt, ...) {
-  va_list ap;
-
-  va_start(ap, fmt);
-  err_doit(1, errno, fmt, ap);
-  va_end(ap);
-  exit(1);
-}
-
-// Nonfatal error unrelated to a system call. error code passed as explict
-// parameter. print a message and return.
-void err_cont(int error, const char *fmt, ...) {
-  va_list ap;
-
-  va_start(ap, fmt);
-  err_doit(1, error, fmt, ap);
-  va_end(ap);
-}
-
-// Fatal error unrelated to a system call. error code
-// passed as explict parameter
-// Print a message and terminte it.
-void err_exit(int error, const char *fmt, ...) {
-  va_list ap;
-
-  va_start(ap, fmt);
-  err_doit(1, error, fmt, ap);
-  va_end(ap);
-  exit(1);
-}
-
-// Fatal error related to a system call.
-// Print a message, dump core, and terminate it.
-void err_dump(const char *fmt, ...) {
-  va_list ap;
-
-  va_start(ap, fmt);
-  err_doit(1, errno, fmt, ap);
-  va_end(ap);
-  abort(); /*dump core */
-  exit(1);
-}
-
-// Nonfatal error unrelated to system call.
-// Print a message and return.
-void err_msg(const char *fmt, ...) {
-  va_list ap;
-
-  va_start(ap, fmt);
-  err_doit(0, 0, fmt, ap);
-  va_end(ap);
-}
-
-// Fatal error unrelated to a system call .
-// Print a message and terminate it.
-void err_quit(const char *fmt, ...) {
-  va_list ap;
-
-  va_start(ap, fmt);
-  err_doit(0, 0, fmt, ap);
-  va_end(ap);
-  exit(1);
-}
-/*###################################*/
-#include <sys/wait.h>
-
-void pr_exit(int status) {
-  if (WIFEXITED(status)) {
-    printf("normal termination , exit status = %d\n", WEXITSTATUS(status));
-  } else if (WIFSIGNALED(status)) {
-    printf("abnormal termination, signal number = %d\n", WTERMSIG(status));
-  } else if (WIFSTOPPED(status)) {
-    printf("child stopped, signal number = %d\n", WSTOPSIG(status));
-  }
-
-#ifdef WCOREDUMP
-        WCOREDUMP(status) ? "(core file generated)" : "");
-#else
-  ("");
-#endif
-}
+//#include "errlog.c"		/* There have a undeclaration var */
+#include "error.c"
+#include "unit2.c"
+#include "unit3.c"
+#include "unit8.c"
+#endif /* APUR_H */
