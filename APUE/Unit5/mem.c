@@ -1,4 +1,4 @@
-#include "../lib/apue.h"
+#include "../include/apue.h"
 #include <stdio.h>
 
 #define BSZ 48

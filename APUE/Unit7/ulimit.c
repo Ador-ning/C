@@ -1,4 +1,4 @@
-#include "../lib/apue.h"
+#include "../include/apue.h"
 #include <sys/resource.h>
 
 #define doit(name) pr_limits(#name, name)

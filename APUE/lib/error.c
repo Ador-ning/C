@@ -1,15 +1,15 @@
-#include "apue.h"
+#include "../include/apue.h"
 //#include <stdarg.h>
 
 /*######################################*/
-extern void err_msg(const char *, ...); /* {App misc_source} */
-extern void err_dump(const char *, ...) __attribute__((noreturn));
-extern void err_quit(const char *, ...) __attribute__((noreturn));
-extern void err_cont(int, const char *, ...);
-extern void err_exit(int, const char *, ...) __attribute__((noreturn));
-extern void err_ret(const char *, ...);
-extern void err_sys(const char *, ...) __attribute__((noreturn));
-static void err_doit(int, int, const char *, va_list);
+// extern void err_msg(const char *, ...); /* {App misc_source} */
+// extern void err_dump(const char *, ...) __attribute__((noreturn));
+// extern void err_quit(const char *, ...) __attribute__((noreturn));
+// extern void err_cont(int, const char *, ...);
+// extern void err_exit(int, const char *, ...) __attribute__((noreturn));
+// extern void err_ret(const char *, ...);
+// extern void err_sys(const char *, ...) __attribute__((noreturn));
+// static void err_doit(int, int, const char *, va_list);
 
 /*######################################*/
 static void err_doit(int errflag, int error, const char *fmt, va_list ap) {

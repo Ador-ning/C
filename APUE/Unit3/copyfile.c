@@ -1,4 +1,4 @@
-#include "../lib/apue.h"
+#include "../include/apue.h"
 
 int main(int argc, char const *argv[]) {
   /* code */

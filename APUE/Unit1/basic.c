@@ -1,4 +1,4 @@
-#include "apue"
+#include "../include/apue.h"
 #include <dirent.h>
 #include <unistd.h> /* Provide the unix standard functions prototypes*/
 

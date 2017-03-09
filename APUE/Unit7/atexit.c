@@ -1,4 +1,4 @@
-#include "../lib/apue.h"
+#include "../include/apue.h"
 
 /*#######################################*/
 /* Declaration */

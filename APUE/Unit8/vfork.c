@@ -1,4 +1,4 @@
-#include "../lib/apue.h"
+#include "../include/apue.h"
 
 int globval = 6;
 const char buf[] = "a write to stdout\n";
