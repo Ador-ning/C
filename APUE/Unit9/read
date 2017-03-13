@@ -1,0 +1,27 @@
+#Unit9 -- 进程关系 relationship
+
+#1 终端登录
+#2 网络登录
+#3 进程组	-- 进程组是由一个或多个进程的集合，同一个进程组中的各种进程接收来自同一终端的各种信号
+getpgrp() -- 获取进程组ID <unistd.h>
+setpgid(pid_t pid, pid_t gpid); -- 设置组ID
+#4 会话 -- session 是一个或多个进程组的集合， 通常是shell的管道将几个进程编成一组
+setsid() -- <unistd.h> 新会话 -- 返回首进程ID
+
+#5 终端控制  -- 前台／后台
+#6 函数 -- 通知内核进程的前后台信息
+tcgetpgrp()	-- 返回前台进程组ID
+tcsetpgrp() --  由作业控制shell调用
+tcgetsid() -- 识别控制终端会话的首进程
+
+#7 作业控制
+A 支持作业控制的shell
+B 内核中的终端驱动程序必须支持作业控制
+C 内核必须提供对某些控制信号的支持
+Ctrl+Z -- 挂起   Ctrl+C -- 中断		Ctrl+\ -- 退出
+
+后台 -- &
+前台 -- fg %number
+
+#8 shell执行程序
+#9 孤儿进程
