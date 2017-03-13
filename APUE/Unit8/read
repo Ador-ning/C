@@ -25,19 +25,19 @@ getpid() getppid()-父进程ID getuid()-实际用户ID geteuid()-有效用户ID 
 
 wait3() wait4() -- 附加参数，允许内核返回由终止进程及其所有子进程使用的资源概况
 
-#6 竞争条件 -- 利用管道
+#6 竞争条件 -- 利用管道		TELL_WAIT()等实现原理
 
 #7 函数exec() -- 用磁盘上的一个新程序替换了当前进程的正文段、数据段、堆段和栈段
 execl() execv() execle() execve()--系统调用 -- 取路径作为参数  execlp() execvp() -- 取文件名作为参数 fexecve() -- fd参数
 
 #8 解释器文件 -- 脚本文件
 
-#9 函数system()
+#9 函数system() -- 其中实现fork() exec() waitpid()三个函数		例程对文件执行权限有问题
 
-#10 进程会计
+#10 进程会计 -- accton 命令启动进程会计  <sys/acct.h>会计记录结构体
 
-#11 进程调度
-
+#11 进程调度 -- 调度策略和调度优先级是由内核确定的，进程可以通过nice值调整运行优先级	<unistd.h>
+nice() getpriority() setpriority()
 #12 进程时间
 
 补  <stdlib.h> -- 定义变量 const char **environ; -- 打印系统环境变量
