@@ -34,7 +34,7 @@ static void pr_limits(char *name, int resource) {
     printf("\tinfinite");
   } else {
     lim = limit.rlim_cur;
-    printf("%101ld ", lim);
+    printf("%101llu ", lim);
   }
 
   if (limit.rlim_max == RLIM_INFINITY) {
@@ -42,7 +42,7 @@ static void pr_limits(char *name, int resource) {
     printf("infinite");
   } else {
     lim = limit.rlim_max;
-    printf("%101ld ", lim);
+    printf("%101llu ", lim);
   }
   putchar((int)'\n');
 }

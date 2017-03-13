@@ -6,7 +6,7 @@ int main(int argc, char const *argv[]) {
   struct stat f;
   char *p;
 
-  for (size_t i = 0; i < argc; i++) {
+  for (i = 0; i < argc; i++) {
     /* code */
     printf("%s:", argv[i]);
     if (lstat(argv[i], &f) < 0) {
@@ -21,11 +21,10 @@ int main(int argc, char const *argv[]) {
     } else if (S_ISDIR(f.st_mode)) {
       /* code */
       p = "directory";
-    } else if (S_ISFIFO(f.st_mode))) {
-        /* code */
-        p = "fifo";
-      }
-    else if (S_ISCHR(f.st_mode)) {
+    } else if (S_ISFIFO(f.st_mode)) {
+      /* code */
+      p = "fifo";
+    } else if (S_ISCHR(f.st_mode)) {
       /* code */
       p = "character";
     } else if (S_ISBLK(f.st_mode)) {

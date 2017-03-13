@@ -12,7 +12,7 @@ void pr_exit(int status) {
   }
 
 #ifdef WCOREDUMP
-        WCOREDUMP(status) ? "(core file generated)" : "");
+  WCOREDUMP(status) ? "(core file generated)" : " ";
 #else
   (" ");
 #endif

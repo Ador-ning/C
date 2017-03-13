@@ -7,7 +7,7 @@ typedef int Myfunc(const char *, const struct stat *, int);
 /*######################################*/
 /* Local */
 static Myfunc myfunc;
-static int myftw(char *, Myfunc *);
+static int myftw(const char *, Myfunc *);
 static int dopath(Myfunc *);
 static long nreg, ndir, nblk, nchr, nfifo, nslink, nsock, ntot;
 
@@ -32,35 +32,35 @@ int main(int argc, char const *argv[]) {
     /* code */
     ntot = 1;
   }
-  printf("regular files%71d, %5.2f %%\n", nreg, nreg * 100.0 / ntot);
-  printf("directoriy files%71d, %5.2f %%\n", ndir, ndir * 100.0 / ntot);
-  printf("block files%71d, %5.2f %%\n", nblk, nblk * 100.0 / ntot);
-  printf("character files%71d, %5.2f %%\n", nchr, nchr * 100.0 / ntot);
-  printf("fifo files%71d, %5.2f %%\n", nfifo, nfifo * 100.0 / ntot);
-  printf("slink files%71d, %5.2f %%\n", nslink, nslink * 100.0 / ntot);
-  printf("socket files%71d, %5.2f %%\n", nsock, nsock * 100.0 / ntot);
+  printf("regular files%71d, %5.2f %%\n", (int)nreg, nreg * 100.0 / ntot);
+  printf("directoriy files%71d, %5.2f %%\n", (int)ndir, ndir * 100.0 / ntot);
+  printf("block files%71d, %5.2f %%\n", (int)nblk, nblk * 100.0 / ntot);
+  printf("character files%71d, %5.2f %%\n", (int)nchr, nchr * 100.0 / ntot);
+  printf("fifo files%71d, %5.2f %%\n", (int)nfifo, nfifo * 100.0 / ntot);
+  printf("slink files%71d, %5.2f %%\n", (int)nslink, nslink * 100.0 / ntot);
+  printf("socket files%71d, %5.2f %%\n", (int)nsock, nsock * 100.0 / ntot);
   return 0;
 }
 
 /*##############################################*/
 /* Local Funtions */
-static myftw(char *pathname,
+static myftw(const char *pathname,
              Myfunc *myfunc) {     /* we return whatever func() returns */
   fullpath = path_alloc(&pathlen); /* define in apue.h */
   if (pathlen <= strlen(pathname)) {
     /* code */
     pathlen = strlen(pathname) * 2;
-    if ((fullpath = realloc(fullpath, size_t pathlen)) == NULL) {
+    if ((fullpath = realloc(fullpath, pathlen)) == NULL) {
       /* code */
       err_quit("realloc failed.");
       free((void *)fullpath); /* add it */
     }
     strcpy(fullpath, pathname);
   }
-  return (dopath(func));
+  return (dopath(myfunc));
 }
 /* manuplate the vars*/
-static int myfunc(const cahr *pathname, const struct stat *statptr, int types) {
+static int myfunc(const char *pathname, const struct stat *statptr, int types) {
   switch (types) {
   case FTW_F:
     switch (statptr->st_mode & S_IFMT) {
@@ -81,7 +81,7 @@ static int myfunc(const cahr *pathname, const struct stat *statptr, int types) {
       break;
     case S_IFSOCK:
       nsock++;
-      break ++;
+      break;
     case S_IFDIR:
       err_dump("for S_IFDIR for %s", pathname);
     }
@@ -96,7 +96,7 @@ static int myfunc(const cahr *pathname, const struct stat *statptr, int types) {
     err_ret("stat error directoriy %s", pathname);
     break;
   default:
-    err_dump("uknown type %d for pathname: %s", type, pathname);
+    err_dump("uknown type %d for pathname: %s", types, pathname);
   }
   return 0;
 }
@@ -123,7 +123,7 @@ static int dopath(Myfunc *func) {
   if (n + NAME_MAX / 4 + 2 > pathlen) { /* expand path buffer */
     /*Not making so much long string as a file or directoriy name*/
     pathlen *= 2;
-    if ((fullpath = realloc(fullpath, pathlen)) == BULL) {
+    if ((fullpath = realloc(fullpath, pathlen)) == NULL) {
       free(fullpath); /* add it */
       err_quit("realloc error.");
     }
@@ -132,7 +132,7 @@ static int dopath(Myfunc *func) {
   fullpath[n] = 0;
   if ((dptr = opendir(fullpath)) == NULL) { /* cann't open directoriy */
     /* code */
-    return (func(fullpath, &statbuf, FWT_DNR));
+    return (func(fullpath, &statbuf, FTW_DNR));
   }
 
   while ((dirptr = readdir(dptr)) != NULL) {

@@ -25,7 +25,7 @@ int main(int argc, char const *argv[]) {
 
   if (val & O_APPEND) {
     /* code */
-    printf(", append.", );
+    printf(", append");
   }
 
   if (val & O_NONBLOCK) {
@@ -37,12 +37,12 @@ int main(int argc, char const *argv[]) {
     printf(", sync write.");
   }
 
-#if !define(_POSIX_C_SOURCE) && define(O_FSYNC) && (O_FSYNC != O_SYNC)
-  if (val & O_FSYNC) {
-    /* code */
-    printf(", sync writes.");
-  }
-#endif
+  // #if !define(__POSIX_C_SOURCE) && define(O_FSYNC) && (O_FSYNC != O_SYNC)
+  //  if (val & O_FSYNC) {
+  /* code */
+  //    printf(", sync writes.");
+  //  }
+  //#endif
   putchar('\n');
   return 0;
 }
