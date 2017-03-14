@@ -33,4 +33,5 @@
 *.su
 
 #The plugins produce
+tags
 .tags*
