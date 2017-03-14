@@ -30,7 +30,7 @@ int main(int argc, char const *argv[]) {
     signal(SIGHUP, sig_hup);
     kill(getpid(), SIGTSTP); /* stop */
     pr_ids("child");
-    if (read(STDIN_FILENO, &c, 1) != 1) {
+    if (rea·d(STDIN_FILENO, &c, 1) != 1) {
       printf("read error %d on controlling TTY\n", errno);
     }
   }
