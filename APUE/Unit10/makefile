@@ -3,7 +3,7 @@ ROOT=..
 PLATFORM=$(shell $(ROOT)/SystemType.sh)
 include $(ROOT)/Make.defines.myMacOS
 
-PROG= catch my_alarm sigcld sleep read
+PROG= catch.out my_alarm.out sigcld.out sleep.out read.out sigpending.out sigjmp.out sigsuspend.out sigsuspend_wait.out
 all: $(PROG)
 %: %.c $(LIBMYAPUE)
 	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS) $(LDLIBS)

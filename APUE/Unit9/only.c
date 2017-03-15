@@ -13,6 +13,7 @@ static void pr_ids(char *name) {
   printf("%s: pid = %ld, ppid = %ld, gpid = %ld, tpgid = %ld\n", name,
          (long)getpid(), (long)getppid(), (long)getpgrp(),
          (long)tcgetpgrp(STDIN_FILENO));
+
   fflush(stdout);
 }
 

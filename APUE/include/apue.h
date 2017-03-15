@@ -65,6 +65,11 @@ void set_fl(int, int); /* {Prog setfl} 3.12*/
 
 void pr_mask(const char *);           /* {Prog prmask} 10.14*/
 Sigfunc *signal_intr(int, Sigfunc *); /* {Prog signal_intr_function}  10.19*/
+Sigfunc *mysignal(int, Sigfunc *);
+int mysigaddset(sigset_t *, int);
+int mysigdelset(sigset_t *, int);
+int mysigismember(const sigset_t *, int);
+void myabort(void);
 
 void daemonize(const char *); /* {Prog daemoninit} 13.1*/
 

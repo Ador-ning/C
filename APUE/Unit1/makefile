@@ -3,7 +3,7 @@ ROOT=..
 PLATFORM=$(shell $(ROOT)/SystemType.sh)
 include $(ROOT)/Make.defines.myMacOS
 
-PROGS= getputc ls1 mycat shell1 shell2 testerror uidgid
+PROGS= getputc.out ls1.out mycat.out shell1.out shell2.out testerror.out uidgid.out
 
 all: $(PROGS)
 %: %.c $(LIBMYAPUE)

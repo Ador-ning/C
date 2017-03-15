@@ -26,12 +26,45 @@ func - 函数地址 SIG_IGN SIG_DFL 自己编写函数
 A 使用静态数据结构	B 动态分配释放内存	C 标准IO函数--使用全局数据结构
 使用<setjmp.h>控制执行，信号处理中断执行流，
 
-#6
+#6 SIGCHLD -- 子进程状态变化产生此信号
 
-#7
-#8
-·#9
-#10
-#11
-#12
-#13
+#7 可靠信号属于
+信号未决(pending)状态
+信号屏蔽字
+
+#8 函数kill() raise()-向自身发送信号
+
+#9 函数alarm() pause()
+alarm() -- 定时产生SIGALRM信号，使用细节
+	返回值 -- 上次剩余时间
+	定时期间可以重置，无期限延长
+pause() -- 挂起进程，直到捕捉到一个信号
+
+#10 信号集 - 数据结构sigset_t 通知内核信号屏蔽情况
+sigempty()	sigfillset()	sigaddset()		sigdelset()		sigismember()
+
+#11 函数sigprocmask -- 检测 更改或同时进行对信号的屏蔽字  单线程
+int sigprocmask(int how, const sigset_t *set, const sigset_t *oset);
+A 如果oset非空，进程当前的信号屏蔽字通过oset返回
+B set为非空指针，set为空无意义
+C how指示如何修改， SIG_BLOCK SIG_UNBLOCK SIG_SETMASK
+在sigprocmask调用后，有任何未决 不在阻塞的信号，则在sigprocmask返回前，至少将其中之一递交给进程
+
+#12 函数sigpending
+int sigpending(sigset_t *set);  通过set参数返回信号集，其信号是阻塞未决信号
+
+#13 函数sigaction -- 检查或修改与指定信号相关的处理动作
+int sigaction(int signo,  const struct sigaction *act, const struct sigaction *oact);
+signo - 是要检测或修改其具体动作的信号编号
+act -- 如果非空，则要修改其动作·
+oact -- 若果指针非空，则系统经过oact返回改信号的上一个动作
+
+#14 函数sigsetjmp siglongjmp --- 在信号处理程序中使用该函数进行跳转
+longjmp() -- 当捕捉到一个信号时，进入捕捉函数，此时当前信号被自动地加入到进程的信号屏蔽字中，
+setjmp(jmp_buf env, int savemask) -- savemask非0，在env中保存当前信号屏蔽字。 供siglongjmp返回时恢复
+
+#15 函数sigsuspend -- 原子操作，先恢复信号屏蔽字，在使进程休眠。 解决不可靠的信号屏蔽字恢复情况
+int sigsuspend(const sigset_t *set);
+	A 进程信号的屏蔽字设置为set指向的值。
+	B 在捕捉到一个信号或者发生了一个终止信号之前，该进程被挂起
+	C 如果捕捉到一个信号而且从该信号处理程序返回，则sigsuspend返回，并且该进程的信号屏蔽字设置我饿调用该函数之前的值。
