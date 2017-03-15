@@ -68,6 +68,10 @@ void WAIT_CHILD(void) {
 }
 
 /*#########################################*/
+
+/*
+*	Not defined in apue.h
+*/
 int system(const char *cmdstring) { /* Version-- with no signal handing */
   pid_t pid;
   int status;
@@ -89,5 +93,78 @@ int system(const char *cmdstring) { /* Version-- with no signal handing */
       }
     }
   }
+  return (status);
+}
+
+/*
+*	Add signal processing
+*/
+int sigsystem(const char *cmdstring) { /* Version-- with no signal handing */
+  pid_t pid;
+  int status;
+
+  struct sigaction ignore, saveintr, saveqiut;
+  sigset_t chldmask, savemask;
+
+  if (cmdstring == NULL) {
+    return (1);
+  }
+
+  ignore.sa_handler = SIG_IGN;
+  sigemptyset(&ignore.sa_mask);
+  ignore.sa_flags = 0;
+
+  if (sigaction(SIGINT, &ignore, &saveintr) < 0) {
+    return (-1);
+  }
+
+  if (sigaction(SIGQUIT, &ignore, &saveqiut) < 0) {
+    return (-1);
+  }
+
+  sigemptyset(&chldmask);
+  sigaddset(&chldmask, SIGCHLD);
+  if (sigprocmask(SIG_BLOCK, &chldmask, &savemask) < 0) {
+    return (-1);
+  }
+
+  if ((pid = fork()) < 0) {
+    status = -1;
+    err_sys("fork error");
+  } else if (pid == 0) { /* child */
+                         /*
+                         *	restore it
+                         */
+    sigaction(SIGINT, &saveintr, NULL);
+    sigaction(SIGQUIT, &saveqiut, NULL);
+    sigprocmask(SIG_SETMASK, &savemask, NULL);
+
+    execl("/bin/sh", "sh", cmdstring, (char *)0);
+    _exit(127); /* execl error */
+  } else {      /* parent */
+    while (waitpid(pid, &status, 0) < 0) {
+      if (errno != EINTR) {
+        status = -1;
+        break;
+      }
+    }
+  }
+
+  /*
+  *	restore it
+  */
+  if (sigaction(SIGINT, &saveintr, NULL) < 0) {
+    return (-1);
+  }
+
+  if (sigaction(SIGQUIT, &saveqiut, NULL) < 0) {
+
+    return (-1);
+  }
+
+  if (sigprocmask(SIG_SETMASK, &savemask, NULL) < 0) {
+    return (-1);
+  }
+
   return (status);
 }

@@ -70,6 +70,7 @@ int mysigaddset(sigset_t *, int);
 int mysigdelset(sigset_t *, int);
 int mysigismember(const sigset_t *, int);
 void myabort(void);
+int sigsystem(const char *);
 
 void daemonize(const char *); /* {Prog daemoninit} 13.1*/
 

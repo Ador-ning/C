@@ -68,3 +68,18 @@ int sigsuspend(const sigset_t *set);
 	A 进程信号的屏蔽字设置为set指向的值。
 	B 在捕捉到一个信号或者发生了一个终止信号之前，该进程被挂起
 	C 如果捕捉到一个信号而且从该信号处理程序返回，则sigsuspend返回，并且该进程的信号屏蔽字设置我饿调用该函数之前的值。
+
+#16 函数sleep nanosleep clock_nanosleep
+解决sleep函数缺陷
+
+#17 函数sigqueue
+
+#18 作业控制
+SIGCHLD -- 子进程已停止或终止
+SIGCONT -- 使停止的进程继续运行
+SIGSTOP -- 停止信号（不能被捕捉或忽略）
+SIGTSTP -- 交互式停止信号
+SIGTTIN -- 后台进程组成员读控制中断
+SIGTTOU -- 后台进程组成员写控制中断
+
+#19 信号名与编号的实现   利用数组，数组元素为信号名的·字符串指针
