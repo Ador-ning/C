@@ -3,8 +3,8 @@ ROOT=..
 PLATFORM=$(shell $(ROOT)/SystemType.sh)
 include $(ROOT)/Make.defines.myMacOS
 
-PROG= atexit.out longjump.out ulimit.out
-all: $(PROG)
+PROGS= atexit longjump ulimit
+all: $(PROGS)
 %: %.c $(LIBMYAPUE)
 	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS) $(LDLIBS)
 

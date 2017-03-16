@@ -1,8 +1,7 @@
 #include "apue.h"
+#include <errno.h>
+int main(void) {
+  printf("hello world from process ID %ld\n", (long)getpid());
 
-int
-main(void)
-{
-	printf("hello world from process ID %ld\n", (long)getpid());
-	exit(0);
+  exit(0);
 }

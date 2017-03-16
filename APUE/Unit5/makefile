@@ -3,8 +3,8 @@ ROOT=..
 PLATFORM=$(shell $(ROOT)/SystemType.sh)
 include $(ROOT)/Make.defines.myMacOS
 
-PROG= mem.out IOBufInfo.out
-all: $(PROG)
+PROGS= mem IOBufInfo
+all: $(PROGS)
 %: %.c $(LIBMYAPUE)
 	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS) $(LDLIBS)
 

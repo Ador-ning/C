@@ -1,16 +1,14 @@
 #include "apue.h"
+#include <errno.h>
+int main(void) {
+  int c;
 
-int
-main(void)
-{
-	int		c;
+  while ((c = getc(stdin)) != EOF)
+    if (putc(c, stdout) == EOF)
+      err_sys("output error");
 
-	while ((c = getc(stdin)) != EOF)
-		if (putc(c, stdout) == EOF)
-			err_sys("output error");
+  if (ferror(stdin))
+    err_sys("input error");
 
-	if (ferror(stdin))
-		err_sys("input error");
-
-	exit(0);
+  exit(0);
 }

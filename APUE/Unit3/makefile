@@ -3,8 +3,8 @@ ROOT=..
 PLATFORM=$(shell $(ROOT)/SystemType.sh)
 include $(ROOT)/Make.defines.myMacOS
 
-PROG= copyfile.out creatholefile.out fileflages.out
-all: $(PROG)
+PROGS= copyfile creatholefile fileflages
+all: $(PROGS)
 %: %.c $(LIBMYAPUE)
 	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS) $(LDLIBS)
 

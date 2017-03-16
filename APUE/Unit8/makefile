@@ -3,8 +3,8 @@ ROOT=..
 PLATFORM=$(shell $(ROOT)/SystemType.sh)
 include $(ROOT)/Make.defines.myMacOS
 
-PROG = echoall.out exec.out exit.out fork.out tiwce_fork.out vfork.out competition.out system.out tsys.out printuids.out acct.out nice.out time.out
-all: $(PROG)
+PROGS= echoall exec exit fork tiwce_fork vfork competition system tsys printuids acct nice time
+all: $(PROGS)
 %: %.c $(LIBMYAPUE)
 	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS) $(LDLIBS)
 
