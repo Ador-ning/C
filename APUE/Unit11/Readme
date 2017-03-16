@@ -1,0 +1,73 @@
+#Unit11  - Threads
+##使用多线程，在单进程环境中执行多个任务。
+##一个进程中的所有线程都可以访问该进程的组成部件
+##同步机制 -- 单资源需要多个用户间共享
+
+#1 线程概念
+####通过为每种事件类型分配单独的处理线程，可以简化处理异步事件的代码
+####多进程必须使用操作系统提供复杂机制；多线程自动地访问相同的存储地址空间和文件描述符
+####通过分解提高系统的吞吐量
+####交互的程序，利用多线程来改善响应时间。将隔离输入输出部分
+####每个线程都包含有表示执行环境所必须的信息，其中包括进程标识线程的线程ID、一组寄存器、栈、调度优先级和策略、信号屏蔽字errno变量、线程私有数据
+#### 一个进程的所有信息对该进程的所有线程都是共享，有代码-可执行程序、全局变量内存去、堆区、fd
+
+#2 线程标识  -- 线程ID只有在所属进程上下文中才有意义 pthread_t <pthread.h>
+pthread_equal()  pthread_self()
+
+#3 线程创建
+pthread_creat(pthread_t *tidp, const pthread_attr_t *attr; void *(*start_rtn)(void *), 			void *arg);
+A 创建成功时，线程ID会被设置成tidp指向的内存单元对象；
+B attr用于定制各种不同的线程属性；
+C 新建的线程从start_rtn函数的地址开始执行，参数void *; 如果参数多与一个以上，需要将参数放到一个结构中，然后将结构地址作为arg传入
+
+D 线程创建不能保证那个线程先运行，新建的线程可以访问进程的地址空间，继承调用线程的浮点环境和信号屏蔽字，但是该线程的挂起信号集会被清除
+E 每个线程提供errno副本
+
+#4 线程终止
+线程退出方式：
+A 从启动例程中返回，返回值是线程的退出码
+B 线程可以被同一进程中的其他线程取消
+C 线程调用pthread_exit
+void pthread_exit(void *rval_ptr);
+int pthread_join(pthread_t thread, void **rval_ptr); -- 访问其他线程返回码
+1 调用线程将一直阻塞，直到指定的线程调用pthread_exit()、从启动例程中返回或者被取消
+从启动例程中返回 -- rval_ptr包含返回码
+取消 -- 有rval_ptr指定的内存单元设置为PTHREAD_CANCELED
+
+void *arg / void *rval_ptr -- 必须全局有效，无类型指针
+
+int pthread_cancel(pthread_t tid); -- 请求取消同一进程中的其他线程
+##线程清理处理程序  一个线程可以建立多个线程清理程序，处理程序记录在栈中，执行顺序与注册顺序相反
+void pthread_cleanup_push(void (*rtn)(void *), void *arg);
+void pthread_clean_up_pop(int execute);
+清理函数rtn;
+
+#5 线程同步  -- 确保每个线程看到一致的数据视图
+增量操作三步：
+A 从内存单元读入寄存器
+B 在寄存器中做变量增量操作
+C 把新值写回内存单元
+
+##1 互斥量 数据类型pthread_mutex_t  动态分配的互斥量必须销毁
+pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr);
+	atrr 默认使用NULL
+pthread_mutex_destroy() pthread_mutex_lock() pthread_mutex_unlock() pthread_mutex_trylock() -- 试图加锁，失败返回EBUSY, 成功返回0
+
+##2 避免死锁  如果线程试图对同一个互斥量加锁两次，自身会陷入死锁状态
+产生死锁方式：
+A 多个互斥变量，使用不当  -- 仔细控制加锁顺序
+B 程序结构难以对互斥量排序，使用函数测试
+####如果锁的粗粒度太粗，就会造成很多线程阻塞等待相同的锁。如果锁的粗粒度太细，过多的锁开销会使系统性能受到影响，代码变得复杂
+
+##3 函数pthread_mutex_timedlock -- 允许线程绑定阻塞时间，超时时不会对互斥量加锁，返回错误码ETIMEOUT
+
+
+##4 读写锁
+
+##5 带有超时的读写锁
+
+##6 条件变量
+
+##7 自旋锁
+
+##8 屏障

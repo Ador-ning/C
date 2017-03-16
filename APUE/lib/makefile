@@ -5,7 +5,7 @@ PLATFORM=$(shell $(ROOT)/SystemType.sh)
 include $(ROOT)/Make.defines.myMacOS
 
 LIBMISC = libapue.a
-OBJS = error.o unit2.o unit3.o unit8.o unit10.o
+OBJS = error.o unit2.o unit3.o unit8.o unit10.o unit11.o
 
 ###############
 all:	$(LIBMISC)
