@@ -3,7 +3,7 @@ ROOT=..
 PLATFORM=$(shell $(ROOT)/SystemType.sh)
 include $(ROOT)/Make.defines.myMacOS
 
-PROGS= threadid quit_code quit_err th_clean threadlock timelock
+PROGS= threadid quit_code quit_err th_clean threadlock timelock rwlock cond barrier
 all: $(PROGS)
 %: %.c $(LIBMYAPUE)
 	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS) $(LDLIBS)

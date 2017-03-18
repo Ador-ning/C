@@ -61,13 +61,35 @@ B 程序结构难以对互斥量排序，使用函数测试
 
 ##3 函数pthread_mutex_timedlock -- 允许线程绑定阻塞时间，超时时不会对互斥量加锁，返回错误码ETIMEOUT
 
-
-##4 读写锁
+##4 读写锁 -- 允许更高的并行性
+读写锁三种状态： 读模式下加锁 写模式下加锁 不加锁状态
+####在写状态下加锁时，在锁被解前，所有试图对其加锁的线程将被阻塞
+####在读状态下加锁时，所有试图以读模式对它进行加锁的线程都会得到访问权，但是任何以写模式试图加锁都会阻塞
+#### 非常适合对于数据结构读次数大于写次数的情况
+读写锁使用之前必须初始化，在释放之前必须销毁
+pthread_rwlock_init() pthread_rwlock_destroy()
+pthread_rwlock_rdlock() pthread_rwlock_wrlock() pthread_rwlock_unlock()
+pthread_rwlock_tryrdlock() pthread_rwlock_trywrlock()
 
 ##5 带有超时的读写锁
+pthread_rwlock_timedrdlock() pthread_rwlock_timedwrlock()
 
-##6 条件变量
+##6 条件变量 -- 条件变量给多线程提供一个汇合场所。条件变量与互斥量一起使用时，允许线程以无竞争的方式等待特定的条件发生
+####条件本身是由互斥量保护的，线程在改变条件状态之前必须首先锁住互斥量
+####调用者把锁住的条件变量传给函数pthread_cond-wait()，函数然后自动把调用线程放到等待条件的队列上，对互斥量解锁。这就关闭条件检查和线程进入休眠状态等待条件改变这两个操作之间的时间通道。
+pthread_cond_init() pthread_cond_destroy() pthread_cond_wait() pthread_cond_timedwait()
+pthread_cond_signal() pthread_cond_broadcast()
 
-##7 自旋锁
+##7 自旋锁 -- 不是使其休眠，而是处于忙等状态，
+适用情况 -- 锁被持有时间短，而且线程不希望在重新调度上花太多成本，通常作为底层原语，用于实现其它类型的锁
+####当自旋锁用在非抢占式内核是非常有用：除了提供互斥机制以外，会阻塞中断，这样中断处理程序就不会让系统陷入死锁状态。
+####在用户层，除非运行在不允许抢占的实时调度类中
+####接口
+pthread_spin_init() pthread_spin_destroy()
+pthread_spin_lock() pthread_spin_unlock() pthread_spin_trylock()
 
-##8 屏障
+##8 屏障 -- 是用户协调多个线程并行工作机制
+####屏障允许每个线程等待，直到所有的合作线程都达到某一点，然后从该点继续执行
+#### 接口
+pthread_barrier_init() pthread_barrier_destroy()
+pthread_barrier_wait()
