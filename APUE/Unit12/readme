@@ -1,0 +1,90 @@
+#12 线程控制 控制线程行为的详细方面，介绍线程属性和同步原语属性， 同一个进程中的多个线程
+之间保持数据私有的方法，基于进程的系统调用与线程的交互
+
+##1节 线程属性 -- pthread接口允许通过设置每个对象关联的不同属性来细调线程和同步对象的行为
+分离线程-- 如果对现有的某个线程的终止状态不感兴趣，可以使用pthread_detach函数让操作系统在线程退出的时候回收它占用的资源
+pthread_attr_getdetachstate()  pthread_attr_setdetachstate()--改变新建线程的栈位置
+
+线程栈属性 -- stacksize
+pthread_attr_getstack(*attr, void *stackaddr, size_t *stacksize);
+pthread_attr_setstack(*attr, void *statckaddr, size_t stackszie);
+####对于进程来讲，虚地址空间的大小是固定的。因为进程中只有一个栈，所以它的大小不是问题。但是对于一个线程来说，同样大小的虚地址必须被所有的线程共享
+A 如果线程的虚地址空间用完，可以使用malloc或者mmap来为可替代的栈分配内存
+B stackaddr线程属性被定义为栈的最低内存位置，具体作用和相关处理七体系相关
+
+pthread_attr_getstacksize(*attr, size_t *stacksize);
+pthread_attr_setstacksize(*attr, size_t stacksize);
+
+线程属性 -- guardsize 控制线程栈末尾之后用以避免栈溢出的扩展内存大小
+pthread_attr_getguardsize() pthread_attr_setguardsize()
+
+##2节 同步属性
+####1 互斥量属性 pthread_mutexattr_t
+##A 进程共享属性
+PTHREAD_PROCESS_SHARED -- 允许相互独立的多个进程把同一个内存数据块映射到它们各自独立的地址空间中 PTHREAD_PROCESS_PRIVATE -- 同进程中，多个线程可以访问同一个对象
+在多进程共享多个互斥量的情况下，pthread线程库可以限制开销较大的互斥量实现
+pthread_mutexattr_getshared() pthread_mutexattr_setshared()
+
+##B 健壮属性 -- 与在多个进程之间共享的互斥量实现有关。当持有互斥量的进程终止时，需要解决互斥量状态恢复的问题。默认值PTHREAD_MUTEX_STALLED--不采取特别的动作；PTHREAD_MUTEX_ROBUST, 改变使用pthread_mutex_lock方式，需要检查3返回值，不需要恢复的成功、需要恢复的成功以及失败。
+pthread_mutexattr_getrobust()	 pthread_mutexattr_setrobust()
+pthread_mutex_consistent() -- 指明与该互斥量相关的状态在互斥量解锁之前保持一致
+
+##C 类型属性 -- 控制互斥量的锁特性
+4中类型：
+	PTHREAD_MUTEX_NORMAL -- 不做任何特殊的错误检查
+	PTHREAD_MUTEX_ERRORCHECK -- 提供错误检查
+	PTHREAD_MUTEX_RECURSIVE -- 允许同以线程在互斥量解锁之前对该互斥量进行多次加锁。递归互斥量维护锁的计数，在解锁和加锁次数不同的情况下，不会释放锁
+	PTHREAD_MUTEX_DEFAULT -- 把这种类型自由地映射到其他互斥量类型
+需要把现有的单线程接口放到多线程环境中，递归互斥量是有用
+pthread_mutexattr_gettype() pthread_mutexattr_settype()互斥量类型属性
+
+####2 读写锁属性 -- 仅支持进程共享属性，同互斥量相同
+pthread_rwlockattr_init() pthread_rwlockattr_destroy() pthread_rwlockattr_getshared() pthread_rwlockattr_setshared()
+
+####3 条件变量属性 --
+进程共享属性  -- 控制着条件变量是可以被单进程的多个线程使用 还是多进程的线程使用
+pthread_condattr_getsharead()	pthread_rwlockattr_setshared()
+
+时钟属性 -- 控制 pthread_cond_timewait函数的超时参数采用的时钟类型
+pthread_condattr_getlock() pthread_condattr_setlock()
+
+####4 屏障属性 -- 进程共享属性 同互斥量
+
+##3节 重入 -- 多个控制线程在相同的时间有可能调用相同的函数
+####函数线程安全 -- 一个函数可以在相同的时间点被多个线程安全地调用
+####支持线程安全函数，实现<unistd.h>定义符号PTHREAD_THREAD_SAFE_FUCTIONS
+####不是线程安全，因为返回的数据存放在静态的内存缓冲区中。通过修改接口，要求调用者自己提供·缓冲区可以使函数变为线程安全
+####线程安全，不代表对信号处理安全
+####安全管理FILE对象方法： 用flockfile() ftrylockfile()获取给定FILE对象方法 funlockfile()
+IO -- getchar_unlocked() get_unlocked() putchar_unlocked() putc_unlocked()
+
+##4节 线程特定数据 -- 线程私有数据，是存储和查询某个特定线程相关数据的一种机制，数据独立性
+
+#### pthread_key_creat(pthread_key_t *keyp, void (*destructor)(void *))
+----创建与该数据特定关联的键，用于获取对线程私有数据特定访问的权限。存储在keyp指向的内存单元中；关联一个析构函数释放空间，没有析构函数--退出异常自动解决。还可以用于释放线程malloc的内存。一个线程关联多个键，其关联的析构函数可以相同，也可以不同。 线程退出时，线程特定数据的析构函数将按照操作系统实现中定义的顺序被调用。析构函数可能会调用其他函数，该函数也可能创建特定的数据，并关联当前的键。当所有的析构函数调用完成系统会检查
+####pthread_key_delete 来取消与特定数据对应
+####pthread_once_t 解决分配的键由于初始化阶段的竞争产生影响
+pthread_once_init(pthread_once_t *flag, void (*fn)(void *))
+	flag -- 全局或静态变量，初始化为PTHREAD_ONCE_INIT；
+当多个线程调用pthread_once,系统保证初始化例程fn只被调用一次
+pthread_setspecific() -- 把键和线程特定数据关联起来
+pthread_getspecific() -- 获得线程特定数据的地址
+
+##5节 取消选项  可取消状态和可取消类型，没有包含在pthread_attr_t, 影响pthread_secanclestate()
+
+##6节 线程和信号
+####每个线程都有自己的信号屏蔽字，但是信号的处理程序是进程中所有的线程共享，进程中的信号递送到单个线程
+####pthread_sigmask()阻止信号递送
+####sigwait()等待信号出现。该函数将会返回，如果等待的信号集中有信号处于挂起状态，返回并去掉挂起信号
+####pthread_kill() -- 发送信号到线程
+
+##7节 线程和fork
+####当线程调用fork时，为子进程创建了整个进程空间的副本；如果父进程包含一个以上的线程，子进程在fork返回后，如果不紧接着调用exec，就需要清理锁状态。
+####在子进程内部，只存在一个进程，就是由父进程中调用fork的线程的副本构成。 父子进程中的线程 锁的竞争。 在fork返回和子进程调用exec之间，子进程只能使用异步信号安全函数
+####pthread_atfork(void (*prepare)(void), void (*parent)(void), void (*child)(void)) -- 建立fork处理程序，清除锁状态
+A prepare fork处理程序由父进程在fork创建子进程前调用，获取父进程定义的所有锁；
+B parent fork处理程序在父进程fork之后，返回父进程上下文中调用，对prepare fork获取的所有锁进行解锁
+C child fork处理程序在fork返回之前在子进程上下文中调用，释放prepare fork获取的所有锁
+·
+##8节 线程和IO
+pread()  pwrite() -- lseek
