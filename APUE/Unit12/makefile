@@ -3,7 +3,7 @@ ROOT=..
 PLATFORM=$(shell $(ROOT)/SystemType.sh)
 include $(ROOT)/Make.defines.myMacOS
 
-PROGS= recursive_mutex ptsig
+PROGS= PthAtfork recursive_mutex ptsig
 all: $(PROGS)
 %: %.c $(LIBMYAPUE)
 	$(CC) $(CFLAGS) $@.c -o $@ $(LDFLAGS) $(LDLIBS)

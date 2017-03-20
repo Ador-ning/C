@@ -1,1 +1,10 @@
 #14 高级IO
+讨论 非阻塞IO 记录锁 IO多路转接--select poll 异步IO readv/writev 存储映射--mmap
+
+##1 非组塞IO
+##2 记录锁
+##3 IO多路转接
+##4 异步IO
+##5 writev readv
+##6 readn writen
+##7 存储映射IO
