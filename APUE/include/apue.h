@@ -103,6 +103,7 @@ pid_t pty_fork(int *, char *, int, const struct termios *,
 #endif
 
 int lock_reg(int, int, int, off_t, int, off_t); /* {Prog lockreg} 14.5*/
+int lockfile(int);
 /*
 *	Lock
 */

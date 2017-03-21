@@ -2,9 +2,103 @@
 讨论 非阻塞IO 记录锁 IO多路转接--select poll 异步IO readv/writev 存储映射--mmap
 
 ##1 非组塞IO
-##2 记录锁
-##3 IO多路转接
+低速系统调用，会可能阻塞进程
+A 如果某些文件类型(读管道 终端设备 网络设备)的数据不存在，读操作可能使调用者永远阻塞
+B 如果数据不能被相同的文件类型立即接收，写操作可能使调用者永远阻塞
+C 在某种条件发生之前打开某些文件类型可能会发生阻塞
+D 对已经加上强制性记录锁的文件进行读写
+E 某些ioctl操作
+F 某进程间通信函数
+
+####非阻塞IO -- 可以用write read open操作，操作失败立即出错返回
+指定用非阻塞的方法：
+	A 用open获得文件描述符，指定O_NONBLOCK文件状态标志
+	B 对一个已经打开的文件描述符，调用fcntl，由该函数打开NONBLOCK文件状态标志
+
+##2 记录锁 -- 同时编辑文件，文件的最后状态取决于写该文件的最后一个进程
+
+####功能 当第一个进程在读或修改文件的某个部分时，用记录锁可以阻止其他进程修改同一文件区
+
+####fcntl记录锁
+int fcntl(int fd, int cmd, .../*struct flock *flockptr*/)		文件<fcntl.h>
+#cmd说明
+	A F_GETLK -- 判断flockptr所描述的锁是否会被另外一把锁排斥
+	B F_SETLK -- 设置flockptr所描述的锁
+	C F_SETLKW -- 阻塞版本
+
+#struct flock说明：
+	A 希望锁类型 short l_type; -- F_RDLCK(读共享锁) F_WRLCK(独占写锁) F_UNLCK(解锁)
+	B 要加锁或解锁的起始字节偏移量(l_start l_whence)
+l_whence SEEK_SET SEEK_END SEEK_CUR
+
+	C 区域的字节长度(l_len);
+	D 进程ID(l_pid)持有的锁能阻塞当前进程
+#加锁解锁区域说明：
+	A 指定区域起始偏移量的元素与lseek函数中最后两个参数类似
+	B 锁可以在当前文件尾端处开始或越过尾端开始，但是不能在文件起始位置之前开始
+	C 若果l_len为0 表示锁的范围可以扩展到最大可能的偏移量，意味无论向锁中追加多少数据，都在锁的范围內
+	D 整个文件加锁方式  l_start l_whence在文件起始位置 l_len 为0
+#多进程对同同一区域加锁规则
+#单一进程提出多个加锁请求---新锁替换旧锁。检测到死锁时，内核必须选择一个进程接收出错返回
+#在设置或释放文件上的一把锁时，系统按照组合或分裂相邻区域
+
+####锁的隐含继承和释放
+锁的自动继承和释放规则：
+	A 锁与进程和文件相关联，无论任何fd关闭时，该进程通过这一fd引用的文件上的任何一把锁都会释放
+	B 通过fork从父进程继承过来的描述符，子进程需要调用fcntl才能获得自己的记录锁
+	C 在执行exec后，新程序可以继承原执行程序的锁。但是如果对一个文件描述符设置量执行时关闭标志，则当exec的一部分关闭该文件描述符时，将释放相应的文件所有锁
+
+####在文件尾端加锁
+####建议性锁和强制性锁
+
+##3 IO多路转接	<sys/select.h>
+例子 -- telnet命令的例子  双输入双输出
+技术：A 先构造一张描述符表 B 调用一个函数，直到表中的一个已经准备好IO时，函数返回
+C 函数poll pselect select
+####函数select pselect
+
+传递给select的参数告诉内核：
+	A 描述符	B 每个描述符所关心的条件	C 接受等待时间 D 已准备好描述符的数量
+	F 对于读 写或异常三个条件中的每一个，那些描述符已准备好
+int select(int maxfdp1, fd_set readfds, fd_set writefds, fd_set exceptfds, struct timeval *tvptr);
+##最后一个参数 NULL(永远等待)／->tv_sec==0 && ->tv_usec==0(不等待)／ 等待指定时间值
+##fd_set集操作
+FD_ISSET()--测试其打开状态	FD_CLR()	FD_SET()	FD_ZERO()
+##maxfdp1 最大文件描述符编号(描述符集合中编号)值加1	／ 或设置FD_SETSIZE
+##返回值 -1(出错) 0(表示没有描述符准备好)	正值(描述符准备好的个数，三个集之和)
+	读集合 -- 进行read操作不会阻塞
+	写集合 -- 进行write操作不会阻塞
+	异常集合 -- 其中一个描述符有一个未决异常条件
+一个描述符阻塞与否并不影响select是否阻塞
+
+int pselect(int maxfdp1, fd_set readfds, fd_set writefds, fd_set exceptfds, const struct timespec *tvptr, const sigset_t *sigmask);
+
+####函数poll	-- 可以作用与任何文件描述符		<poll.h>
+int poll(struct pollfd fdarray[], nfds_t nfds, int timeout);
+
 ##4 异步IO
-##5 writev readv
-##6 readn writen
-##7 存储映射IO
+select / poll查询
+信号
+	BSD IO -- SIGIO
+	System V IO -- SIGPOLL
+
+POSIX异步IO  结构体aiocb
+
+##5 writev readv -- 用于在一次函数调用中读，写多个非连续缓冲区 散布读 ／ 聚集写
+ssize_t readv(int fd, const struct iovec *iov, int iovcnt);
+ssize_t writev(int fd, const struct iovec *iov, int iovcnt);
+参数 iovec结构数组指针：
+	->*iov_base  -- 缓冲区起始地址
+	->iov_len -- 缓冲区大小
+iovcnt -- 指定数组的元素个数，最大值受限于 IOV_MAX
+
+writev函数从缓冲区聚集输出数据的顺序是iov[0] iov[1] ... iov[iovcnt]，返回所有缓冲区长度之和
+readv函数按照顺序依次散布填充到缓冲区
+
+##6 readn writen -- 读写N字节数据，并处理返回值可能小于要求值的情况
+FIFO、管道以及某些设备(特别是终端 和 网络设备)有一下两种性质
+	A 一次read操作所返回的数据可能少于所要求的数据 -- 即使没到达文件尾 继续读
+	B 一次write操作的返回值可能少于指定值  继续写
+
+ ##7 存储映射IO	-- 将一个磁盘文件映射到存储空间中的一个缓冲区上，于是从缓冲上读取数据时就相当于读文件中的相应字节
+void *mmap(void *addr, size_t len, int port, int flag, int fd, off_t off);

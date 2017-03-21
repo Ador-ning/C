@@ -9,7 +9,7 @@ static void log_doit(int, int, int, const char *fmt, va_list ap);
 *	Caller must define and set this: nonzero if
 *	interactive, zero if daemonize
 */
-extern int log_to_stderr; /*????  maybe in logsys can be show*/
+extern int log_to_stderr;
 
 /*
 *	Initilize syslog(), if running as daemon
