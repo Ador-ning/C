@@ -17,8 +17,8 @@ void *thr_fn(void *arg) {
   int error, signo;
 
   for (;;) {
-    err = sigwait(&mask, &signo);
-    if (err != 0) {
+    error = sigwait(&mask, &signo);
+    if (error != 0) {
       syslog(LOG_ERR, "sigwait error");
       exit(1);
     }
@@ -67,7 +67,7 @@ int main(int argc, char const *argv[]) {
   /*
   *	Restore SIGHUP default and block all signals
   */
-  sa.sa_handler = thr_fn;
+  sa.sa_handler = SIG_DFL;
   sigemptyset(&sa.sa_mask);
   sa.sa_flags = 0;
 
@@ -76,7 +76,7 @@ int main(int argc, char const *argv[]) {
   }
   sigfillset(&mask);
   if ((error = pthread_sigmask(SIG_BLOCK, &mask, NULL)) != 0) {
-    err_exit(err, " SIG_BLOCK error");
+    err_exit(error, " SIG_BLOCK error");
   }
 
   /*

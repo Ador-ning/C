@@ -50,6 +50,8 @@ typedef void Sigfunc(int); /* for signal handlers */
 #define max(a, b) ((a) > (b) ? (a) : (b))
 /*######################################*/
 
+int log_to_stderr; /* call for daemons */
+
 /*
  * Prototypes for our own functions.
  */
@@ -72,7 +74,7 @@ int mysigismember(const sigset_t *, int);
 void myabort(void);
 int sigsystem(const char *);
 
-// void daemonize(const char *); /* {Prog daemoninit} 13.1*/
+/* void daemonize(const char *);  {Prog daemoninit} 13.1 */
 
 void sleep_us(unsigned int);               /* {Ex sleepus} Exercise 14.5*/
 ssize_t readn(int, void *, size_t);        /* {Prog readn_writen} 14.24*/
