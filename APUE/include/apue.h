@@ -150,6 +150,9 @@ void log_sys(const char *, ...) __attribute__((noreturn));
 void log_exit(int, const char *, ...) __attribute__((noreturn));
 
 /* done */
+/*
+*	Using signal to realize it
+*/
 void TELL_WAIT(
     void); /* parent/child from {Sec race_conditions} In Section 8.9*/
 void TELL_PARENT(pid_t);
@@ -157,5 +160,14 @@ void TELL_CHILD(pid_t);
 void WAIT_PARENT(void);
 void WAIT_CHILD(void);
 void pr_exit(int); /* {Prog prexit} 8.5*/
+
+/*
+*	Using pipe to realize it	in <unit15.c>
+*/
+void TELL_WAIT_P(void);
+void TELL_PARENT_P(pid_t);
+void TELL_CHILD_P(pid_t);
+void WAIT_PARENT_P(void);
+void WAIT_CHILD_P(void);
 
 #endif /* APUR_H */
