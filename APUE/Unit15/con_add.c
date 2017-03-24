@@ -1,4 +1,4 @@
-#include "../include/apue.h·"
+#include "../include/apue.h"
 
 /* signal handler */
 static void sig_pipe(int);
@@ -45,13 +45,13 @@ int main(int argc, char const *argv[]) {
     close(fd1[0]);
     close(fd2[1]);
 
-    while (fgets(line, MAXLINE, stdin) != NULL) {
+    while (fgets(line, MAXLINE, stdin) != NULL) { /* Have Inputting */
       n = strlen(line);
-      if (write(fd1[1], line, n) != n) {
+      if (write(fd1[1], line, n) != n) { /* Providing argvs to add2 */
         err_sys("write error pipe");
       }
 
-      if (read(fd2[0], line, MAXLINE) < 0) {
+      if (read(fd2[0], line, MAXLINE) < 0) { /* Read the result from add2 */
         err_sys("read error from pipe");
       }
 
@@ -59,7 +59,6 @@ int main(int argc, char const *argv[]) {
         err_msg("child closed pipe");
         break;
       }
-      line[n] = 0;
       if (fputs(line, stdout) == EOF) {
         err_sys("fputs error");
       }

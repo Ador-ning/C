@@ -8,7 +8,8 @@ int main(int argc, char const *argv[]) {
 
   while ((n = read(STDIN_FILENO, line, MAXLINE)) > 0) {
     line[n] = 0; /* 0 -> n-1*/
-    if (sscanf(line, "%d%d", &n1, &n2) == 2) {
+    if (sscanf(line, "%d %d", &n1, &n2) == 2) {
+
       sprintf(line, "%d\n", n1 + n2);
 
       n = strlen(line);

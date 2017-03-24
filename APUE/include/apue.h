@@ -34,6 +34,7 @@
 #define MEM_MAX 8192
 #define MAXLINE 4096 /* max line length */
 #define PATH_MAX 128
+#define NAME_MAX 24
 /*
  * Default file access permissions for new files.
  */
