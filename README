@@ -7,3 +7,6 @@ System. And SourceCode in apue.3e and unpv13e
 In APUE For test codes in Advanced Programming in Unix Environment and some will at UNP
 
 Now, APUE have exercises no to do and some significant points to record in Readme file.
+
+APUE -- Unit12 no function of clock_nanosleep() and no barrier in pthread.
+In Unit2  awk and configure of system and its makefile not understand
