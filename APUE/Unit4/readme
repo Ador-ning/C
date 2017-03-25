@@ -1,12 +1,11 @@
-#
-文件和目录
+##Unit4 -- 文件和目录
 	结构体stat属性
-1) 函数
+1) 函数  <sys/stat.h>
 stat - 返回与改文件有关的信息结构
 fstat - 获得fd相关文件的有关信息
 lstat - 符号链接文件相关信息
 fstatat - 相对路径打开文件的相关信息
-2) 文件类型
+2) 文件类型  -- 测试宏
 	普通文件
 	目录文件
 	块设备文件 - 提供带缓冲访问， 固定长度操作
@@ -43,3 +42,6 @@ futimens futimensat utimes -- 文件时间
 mkdir mkdirat rmdir	-- 目录
 chdir fchdir getcwd
 特殊设备
+
+
+struct stat / FILE / DIR

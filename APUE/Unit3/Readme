@@ -1,9 +1,7 @@
-Total -- File IO, unbuffered IO
+##Unit3 -- File IO, unbuffered IO
 #1 The Functions in Unix -- open, read, write, lseek, close.
 #2 And how to share a file in muilt_process, the Functions -- dup, fcntl, sync, fsync, ioctl.
-
 #3 using the options of clang to 汇编／反汇编
-
 #4 od command to see the file info, -c option with the type of character mode.
 
 #####
@@ -22,5 +20,60 @@ dup	dup2
 sync - 将所有修改过的块缓冲区排入写队列，然后还回，并不等待实际写磁盘操作完成。
 fsync - 只对由fd指定的文件起作用，并且等待写磁盘操纵完成后返回， 还会同步更新文件属性。
 fdatasync - 只影响文件的数据部分。
-4) 更改打开文件属性
-fcntl
+
+######Documents######
+##1 文件描述符	-- int type
+文件描述符 0 1 2替换为 STDIN_FILENO STDOUT_FILENO STDERR_FILENO <unistd.h>
+
+##2 函数open和openat
+int open(const char *path, int oflags, ...);
+int openat(int fd, const char *path, int oflags, ...);
+<fcntl.h> oflags -- O_RDONLY O_WRONLY O_RDWR O_EXEXC O_SEARCH ...
+
+##3 函数create -- <fcntl.h>
+int creat(const char *path, mode_t);
+
+##4 函数close -- <unistd.h>
+int close(int fd);
+
+##5 函数lseek -- <unistd.h>
+off_t lseek(int fd, off_t offset, int whence);  成功，返回新的文件偏移量
+	whence --
+SEEK_CUR -- 将该文件的偏移量设置文当前值加offset, 可正可负
+SEEK_SET -- 将该文件的偏移量设置为距文件开始处offset字节
+SEEK_END -- 将该文件的偏移量设置为文件长度加offset， offset可正可负
+
+##6 函数read
+ssize_t read(int fd, void *buf, size_t nbytes);	成功，返回读取的字节数
+读取字节数少于要求读取的字节数：
+	A 读普通文件，在读到要求字节数之前，已到文件尾
+	B 当从终端读取时，一次只能读取一行
+	C 当从网络读取时，网络中的缓冲机制可能造成
+	D 当从FIFO 或 管道读，管道中少去要求字节数
+	E 信号终端
+
+##7 函数write
+ssize_t write(int fd, const void *buf, size_t nbytes);
+
+##8 IO效率
+##9 文件共享
+	内核使用三种数据结构表示打开文件，它们之间决定了在文件共享方面一个进程对另外一个进程可能产生的影响
+A 每个进程在进程表中有一个记录项，其中包含一张打开文件描述符表
+B 内核为所有打开文件维持一张文件表
+C 每个打开文件都有一个V-node结构
+
+##10 原子操作 -- <unistd.h>  复制一个现有的描述符
+##11 函数dup和dup2
+int dup(int fd);
+int dup2(int fd, int fd2);
+
+##12 函数sync fsync fdatasync
+	传统unix系统实现在内核中设有缓冲区高速缓存或页高速缓存，大多数的磁盘IO都是通过缓冲区进行。
+sync - 将所有修改过的块缓冲区排入写队列，然后还回，并不等待实际写磁盘操作完成。
+fsync - 只对由fd指定的文件起作用，并且等待写磁盘操纵完成后返回， 还会同步更新文件属性。
+fdatasync - 只影响文件的数据部分。
+
+##13 函数fcntl -- 更改打开文件属性
+##14 函数ioctl
+
+##15 /dev/fd -- 文件描述符
