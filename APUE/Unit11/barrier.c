@@ -17,9 +17,9 @@
 *	Vars Global or Local
 */
 long nums[NUMNUM];
-long snums[NUMNUM];
 
-pthread_barrier_t b; /* not have this */
+long snums[NUMNUM];
+/*pthread_barrier_t b;*/ /* not have this */
 
 #ifdef SOLARIS
 #define heapsort qsort

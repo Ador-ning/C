@@ -3,7 +3,6 @@
 #include <time.h>
 
 int main(int argc, char const *argv[]) {
-  int error;
   struct timespec time1;
   struct tm *tmp; /* <time.h> */
 
@@ -18,7 +17,6 @@ int main(int argc, char const *argv[]) {
   printf("time :%s\n", buf);
 
   time1.tv_sec += 10;
-  /*error = pthread_mutex_timedlock(&lock, &time1); */
 
   return 0;
 }

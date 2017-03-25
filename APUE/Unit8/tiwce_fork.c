@@ -14,7 +14,7 @@ int main(int argc, char const *argv[]) {
     }
     sleep(5); /* Let first child be killed -- exit(0) */
     printf("second child, parent pid = %ld\n",
-           (long)getppid()); // Print the init processing ID
+           (long)getppid()); /*Print the init processing ID */
     exit(0);
   }
 

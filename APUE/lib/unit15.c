@@ -131,7 +131,7 @@ FILE *popen(const char *cmdstring, const char *type) {
 }
 
 int pclose(FILE *fp) {
-  int fd, stat;
+  int fd, stat = 0; /* not using */
   pid_t pid;
 
   if (childpid == NULL) {

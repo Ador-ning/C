@@ -30,9 +30,6 @@ static void sig_cld(int signo) {
   int status;
 
   printf("SIGCHLD Received\n");
-  // if (signal(SIGCHLD, sig_cld) == SIG_ERR) { /* reestabilsh handler */
-  //  perror("signaled error");
-  // }
 
   if ((pid = wait(&status)) < 0) { /* fetch child status */
     perror("wait error");

@@ -28,6 +28,7 @@
 #include <stdio.h>  /* for convenience */
 #include <stdlib.h> /* for convenience */
 #include <string.h> /* for convenience */
+#include <time.h>
 #include <unistd.h> /* for convenience */
 
 /*######################################*/
@@ -77,7 +78,8 @@ int sigsystem(const char *);
 
 /* void daemonize(const char *);  {Prog daemoninit} 13.1 */
 
-void sleep_us(unsigned int);               /* {Ex sleepus} Exercise 14.5*/
+void sleep_us(unsigned int);               /* {Ex
+        us} Exercise 14.5*/
 ssize_t readn(int, void *, size_t);        /* {Prog readn_writen} 14.24*/
 ssize_t writen(int, const void *, size_t); /* {Prog readn_writen} 14.24*/
 

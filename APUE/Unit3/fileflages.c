@@ -37,12 +37,11 @@ int main(int argc, char const *argv[]) {
     printf(", sync write.");
   }
 
-  // #if !define(__POSIX_C_SOURCE) && define(O_FSYNC) && (O_FSYNC != O_SYNC)
-  //  if (val & O_FSYNC) {
-  /* code */
-  //    printf(", sync writes.");
-  //  }
-  //#endif
+#if !defined(__POSIX_C_SOURCE) && defined(O_FSYNC) && (O_FSYNC != O_SYNC)
+  if (val & O_FSYNC) {
+    printf(", sync writes.");
+  }
+#endif
   putchar('\n');
   return 0;
 }

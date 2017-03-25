@@ -10,8 +10,8 @@ int main(int argc, char const *argv[]) {
     err_sys("signal - SIGINT error");
   }
 
-  unslept = sleep2(5);
-  printf("sleep2 returned: %u\n", unslept);
+  unslept = sleep(5);
+  printf("sleep returned: %u\n", unslept);
 
   return 0;
 }

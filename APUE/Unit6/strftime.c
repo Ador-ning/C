@@ -10,7 +10,7 @@ int main(int argc, char const *argv[]) {
   char buf2[64];
 
   time(&t);
-  tmp = localtime(t);
+  tmp = localtime(&t);
 
   if (strftime(buf1, 16, "time and date: %r, %a %b %d, %Y", tmp) == 0)
     printf("buffer length 16 is too small.\n");

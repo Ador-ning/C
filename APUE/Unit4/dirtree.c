@@ -139,7 +139,7 @@ static int dopath(Myfunc *func) {
     if (strcmp(dirptr->d_name, ".") == 0 || strcmp(dirptr->d_name, ".."))
       continue;                           /* ignore , and .. */
     strcpy(&fullpath[n], dirptr->d_name); /* depth first search */
-    if (ret = dopath(func) != 0)          /* recursive */
+    if ((ret = dopath(func)) != 0)        /* recursive */
       break;
   }
 
