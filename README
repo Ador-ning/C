@@ -8,5 +8,9 @@ In APUE For test codes in Advanced Programming in Unix Environment and some will
 
 Now, APUE have exercises no to do and some significant points to record in Readme file.
 
+<<<<<<< HEAD
 APUE -- Unit12 no function of clock_nanosleep() and no barrier in pthread.
 In Unit2  awk and configure of system and its makefile not understand
+=======
+APUR in branch Master, UNP in branch net, SHELL in branch shell.
+>>>>>>> shell
